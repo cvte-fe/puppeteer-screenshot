@@ -1,0 +1,8 @@
+{
+  "presets": [
+    "es2015",
+    "stage-0",
+    "flow"
+  ],
+  "plugins": ["transform-export-extensions", "add-module-exports", "transform-class-properties", "transform-object-rest-spread"]
+}

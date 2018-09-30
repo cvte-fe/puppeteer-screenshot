@@ -4,7 +4,7 @@ A screenshot tool with puppeteer
 
 ## 使用 puppeteer 的截图服务
 
-主要希望能传入一段 HTML，或者一个 URL，然后能输出一张图片。
+期望通过传入一段 HTML，或者一个 URL，然后能输出一张图片。
 
 ### get start
 
@@ -116,3 +116,4 @@ const screenshot = new Screenshot(options);
     omitBackground: false // 是否隐藏背景
   }
   ```
+

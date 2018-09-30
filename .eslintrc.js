@@ -4,8 +4,8 @@ const prettierOptions = JSON.parse(fs.readFileSync('./.prettierrc', 'utf8'));
 
 module.exports = {
   parser: 'babel-eslint',
-  extends: ['airbnb'],
-  plugins: ['react', 'jsx-a11y'],
+  extends: [],
+  plugins: [],
   env: {
     browser: true,
     node: true,
@@ -15,9 +15,6 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
-    ecmaFeatures: {
-      jsx: true,
-    },
   },
   rules: {
     'arrow-body-style': [2, 'as-needed'],
