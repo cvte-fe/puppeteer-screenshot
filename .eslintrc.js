@@ -5,7 +5,7 @@ const prettierOptions = JSON.parse(fs.readFileSync('./.prettierrc', 'utf8'));
 module.exports = {
   parser: 'babel-eslint',
   extends: [],
-  plugins: [],
+  plugins: ['import'],
   env: {
     browser: true,
     node: true,
@@ -104,11 +104,5 @@ module.exports = {
     'template-curly-spacing': 'off',
     indent: 'off',
   },
-  settings: {
-    'import/resolver': {
-      webpack: {
-        config: './internals/webpack/webpack.prod.babel.js',
-      },
-    },
-  },
+  settings: {},
 };
