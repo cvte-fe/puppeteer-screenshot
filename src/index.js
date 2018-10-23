@@ -7,12 +7,13 @@ import puppeteer from 'puppeteer';
 import deepExtend from 'deep-extend';
 import path from 'path';
 import { isHttp } from './utils';
-import { isString, get, isEmpty } from 'lodash';
+import { isString, get, isEmpty, isObject } from 'lodash';
 import compose from './libs/middleware';
 
 import initPageMiddleware from './middlewares/initPage';
-import loadPageMiddleware from './middlewares/loadPage';
+// import loadPageMiddleware from './middlewares/loadPage';
 import captureMiddleware from './middlewares/capture';
+import storageMiddleware from './middlewares/storage';
 
 global.Promise = require('bluebird');
 
@@ -26,12 +27,14 @@ class ScreenShot {
     capture: {
       optimize: true,
       storage: {
+        prefix: 'capture-',
         type: 'filesystem',
         path: path.join(process.cwd(), './screenshot'),
       },
       timeout: 30000,
+      isSetRequestInterception: false, // Enabling request interception disables page caching.
       view: {
-        deviceScaleFactor: 2,
+        deviceScaleFactor: 1,
         width: 750,
         height: 1200,
       },
@@ -39,14 +42,7 @@ class ScreenShot {
         type: 'jpeg',
         quality: 75,
         fullPage: false,
-        clip: {
-          // 裁剪
-          x: 0,
-          y: 0,
-          width: 400,
-          height: 400,
-          omitBackground: false,
-        },
+        encoding: 'binary',
       },
       hooks: {
         beforeCapture: () => {
@@ -67,18 +63,28 @@ class ScreenShot {
     },
     {
       enable: true,
-      module: loadPageMiddleware,
-      priority: 100,
+      module: captureMiddleware,
+      priority: 150,
     },
     {
       enable: true,
-      module: captureMiddleware,
-      priority: 150,
+      module: storageMiddleware,
+      priority: 200,
     },
   ];
 
   constructor(options) {
     this.options = deepExtend({}, this.options, options);
+  }
+
+  use(middlewares) {
+    if (!isObject(middlewares)) {
+      throw new Error('middleware must be a pure object or an array');
+    }
+
+    this.middlewares = this.middlewares.concat(middlewares);
+
+    return this;
   }
 
   async launch() {
@@ -142,6 +148,9 @@ class ScreenShot {
       options: captureOptions,
       resolve: defer.resolve,
       reject: defer.reject,
+      result: {
+        requestError: [],
+      },
     };
 
     fn(context, ctx => {

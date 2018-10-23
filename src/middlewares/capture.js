@@ -2,10 +2,23 @@
 
 export default async (ctx, next) => {
   console.log('middleware: capture');
-  const { options, page } = ctx;
-  const { captureOption, storage } = options;
+  const { options, page, result, reject } = ctx;
+  const { captureOption, hooks } = options;
 
-  await page.screenshot({ path: storage.path, ...captureOption });
+  hooks.beforeCapture && hooks.beforeCapture(ctx);
+  let screenshotResult;
+  try {
+    screenshotResult = await page.screenshot({
+      ...captureOption,
+    });
+  } catch (e) {
+    reject(e);
+    return false;
+  }
+
+  result.data = screenshotResult;
+
+  hooks.afterCapture && hooks.afterCapture(screenshotResult, ctx);
 
   next();
 };
