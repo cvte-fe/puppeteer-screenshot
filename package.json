@@ -19,6 +19,7 @@
     "fs-extra": "^7.0.0",
     "koa-compose": "^4.1.0",
     "puppeteer": "^1.9.0",
+    "qiniu": "^7.2.1",
     "queue": "^4.5.0",
     "uuid": "^3.3.2"
   },
