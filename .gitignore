@@ -1,3 +1,4 @@
 /node_modules
 /yarn.lock
 /screenshot
+/test/enow.test.js

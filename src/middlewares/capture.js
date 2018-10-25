@@ -5,7 +5,7 @@ export default async (ctx, next) => {
   const { options, page, result, reject } = ctx;
   const { captureOption, hooks } = options;
 
-  hooks.beforeCapture && hooks.beforeCapture(ctx);
+  hooks.beforeCapture && (await hooks.beforeCapture(ctx));
   let screenshotResult;
   try {
     screenshotResult = await page.screenshot({
@@ -16,9 +16,11 @@ export default async (ctx, next) => {
     return false;
   }
 
+  await page.close();
+
   result.data = screenshotResult;
 
-  hooks.afterCapture && hooks.afterCapture(screenshotResult, ctx);
+  hooks.afterCapture && (await hooks.afterCapture(screenshotResult, ctx));
 
   next();
 };

@@ -1,10 +1,17 @@
 import { isEmpty, isFunction } from 'lodash';
 export default async (ctx, next) => {
   console.log('middleware: initPage');
-  const browser = await ctx.getBrowser();
-  const page = await browser.newPage();
 
   const { options, result } = ctx;
+  const { hooks, pageOption } = options;
+  const browser = await ctx.getBrowser();
+
+  hooks.beforeCreatePage && (await hooks.beforeCreatePage(browser, ctx));
+
+  const page = await browser.newPage();
+
+  hooks.afterCreatePage && (await hooks.afterCreatePage(page, browser, ctx));
+
   const {
     view,
     html,
@@ -46,7 +53,7 @@ export default async (ctx, next) => {
   if (type === 'html') {
     await page.setContent(html);
   } else if (type === 'url') {
-    await page.goto(url);
+    await page.goto(url, pageOption);
   } else {
     throw new Error(`unknown type: ${type}`);
   }

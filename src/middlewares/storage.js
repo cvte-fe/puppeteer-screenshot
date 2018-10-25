@@ -11,10 +11,31 @@ export default async (ctx, next) => {
       : Buffer.from(result.data, 'base64');
 
   try {
-    if (storage.type === 'filesystem') {
-      await storageImageToPath(buffer, storage, captureOption);
-    } else if (storage.type === 'qiniu') {
-      await storageImageToQiuniu(buffer, storage, captureOption);
+    switch (storage.type) {
+      case 'filesystem':
+        result.output = await storageImageToPath(
+          buffer,
+          storage,
+          captureOption,
+        );
+        break;
+
+      case 'qiniu':
+        result.output = await storageImageToQiuniu(
+          buffer,
+          storage,
+          captureOption,
+        );
+        break;
+
+      case 'custom':
+        if (storage.func) {
+          result.output = await storage.func(buffer, storage, captureOption);
+        }
+        break;
+
+      default:
+        console.log('no storage type, go to next step');
     }
   } catch (e) {
     reject(e);

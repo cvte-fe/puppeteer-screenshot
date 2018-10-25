@@ -24,12 +24,13 @@ yarn add puppeteer-screenshot
 const Screenshot = require('puppeteer-screenshot');
 
 const screenshot = new Screenshot({
-  optimize: true,
   storage: {
     type: 'filesystem',
     path: ''
   },
-  timeout: 30000,
+  pageOption: {
+    timeout: 30000,
+  },
   view: {
     deviceScaleFactor: 2, // 可以理解为多倍图
     width: 750,  
@@ -44,8 +45,9 @@ const screenshot = new Screenshot({
       y: 0,
       width: 400,
       height: 400,
-      omitBackground: false // 是否隐藏背景
-    }
+    },
+    omitBackground: false, // 是否隐藏背景
+    encoding: 'binary'
   },
   hooks: {
     beforeCapture: function(){
@@ -57,10 +59,7 @@ const screenshot = new Screenshot({
   }  
 })
 
-screenshot.capture({
-  type: 'url',
-  url: 'http://www.baidu.com'
-})
+const result = await screenshot.capture('http://www.baidu.com');
 ```
 
 ### Options
@@ -78,22 +77,28 @@ const screenshot = new Screenshot(options);
 | captureOption | object           | 否   | 截图参数     |
 | hooks         | object           | 否   | 钩子         |
 
-##### optimize 是否压缩图片
+#### pageOption 超时时间
 
-* [ boolean ]: false, 默认不开启图片压缩
-* [ number ]: 1-100, 图片质量，数值越小，质量越差
+* timeout [number]: 30000, 默认是 30000， 这个超时时间是指加载页面的超时时间
 
-#### timeout 超时时间
-
-* [number]: 30000, 默认是 30000， 这个超时时间是指加载页面的超时时间
+更多配置项请参考文档： https://pptr.dev/#?product=Puppeteer&version=v1.9.0&show=api-pagegotourl-options
 
 #### storage 存储方式
 
-* `type`: 目前支持两种：`filesystem`，`qiniu`。 `filesystem`即存储截图到本地文件系统， `qiniu`是存储截图到[七牛](https://developer.qiniu.com/)服务;
-* `path`: 本地文件系统路径，默认是`process.cwd()`，仅在`type: "filesystem"`有效;
-* `config`: 七牛参数，具体参考：https://developer.qiniu.com/kodo/sdk/1289/nodejs
+* `type`: 目前支持两种：`filesystem`，`qiniu`, 'custom'。 `filesystem`即存储截图到本地文件系统， `qiniu`是存储截图到[七牛](https://developer.qiniu.com/)服务, 自定义是自行处理存储;
 
-我们也可以自定义存储方式，传值`function`时，可以自定义存储
+* `path`: 本地文件系统路径，默认是`process.cwd()`，仅在`type: "filesystem"`有效;
+
+* `accessKey`: 七牛参数
+* `secretKey`: 七牛参数
+* `bucket`: 七牛参数， 存储空间
+* `bucketType`: 七牛参数， `public` or `private`存储空间
+* `deadline`: 七牛参数, 仅对`bucketType`为`private`时有效
+* `domain`: 七牛参数, 资源访问域名
+
+* `func`: 当 `type` 为 `custom`时有效，传出处理存储的函数，func(buffer, storage, captureOption)
+
+注意, 当`type`为空时，不执行任何存储动作，直接跳到下一步
 
 #### view 窗口大小
 
@@ -101,7 +106,28 @@ const screenshot = new Screenshot(options);
 * `width`: number, 单位`px`， 默认 1280
 * `height`: number, 单位`px`, 默认 720
 
+### isSetRequestInterception 是否拦截请求， 值为`boolean`
+
+注意：当`isSetRequestInterception` 为 `true`时，缓存失效
+
+### interceptedRequest 请求拦截器，值为`function`
+
+例如：
+
+```
+{
+  interceptedRequest : (interceptedRequest) => {
+    if (interceptedRequest.url().endsWith('.png') || interceptedRequest.url().endsWith('.jpg'))
+      interceptedRequest.abort();
+    else
+      interceptedRequest.continue();
+  }
+}
+```
+
 #### captureOption 截图参数
+
+详细请参考文档：https://pptr.dev/#?product=Puppeteer&version=v1.9.0&show=api-pagescreenshotoptions
 
 * `type`: 截图格式，目前只支持`jpeg`和`png`
 * `quality`: 截图质量
@@ -117,3 +143,58 @@ const screenshot = new Screenshot(options);
   }
   ```
 
+#### hooks
+
+为了更加方便地扩展，提供了四个基本的 hooks：
+
+* beforeCreatePage： function return Promise, 创建页面前调用
+
+```
+  beforeCreatePage(browser, ctx)
+```
+
+* afterCreatePage function return Promise, 创建页面后调用
+
+```
+  afterCreatePage(page, browser, ctx)
+```
+
+* beforeCapture function return Promise, 在截图前调用
+
+```
+  beforeCapture(ctx)
+```
+
+* afterCapture function return Promise, 在截图后调用
+
+```
+  afterCapture(ctx)
+```
+
+#### middleware
+
+如果钩子无法满足扩展的需求，那么可以使用 middleware 来扩展，例如：
+
+```
+screenshot.use({
+  enable: true,
+  module: async (ctx, next) => {
+    // do something...
+    next();
+  },
+  priority: 60,
+});
+```
+
+`priority` 代表执行权重:
+
+`priority` < 50: 在页面初始化之前执行
+`priority` > 50 && `priority` < 150: 在截图前执行
+`priority` > 150 && `priority` < 200: 在截图后，存储前执行
+`priority` > 200 在存储后执行
+
+## Test
+
+```
+npm run test
+```

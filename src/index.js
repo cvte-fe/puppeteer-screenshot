@@ -31,7 +31,9 @@ class ScreenShot {
         type: 'filesystem',
         path: path.join(process.cwd(), './screenshot'),
       },
-      timeout: 30000,
+      pageOption: {
+        timeout: 30000,
+      },
       isSetRequestInterception: false, // Enabling request interception disables page caching.
       view: {
         deviceScaleFactor: 1,
@@ -45,10 +47,16 @@ class ScreenShot {
         encoding: 'binary',
       },
       hooks: {
-        beforeCapture: () => {
+        beforeCreatePage: async () => {
           // do something
         },
-        afterCapture: () => {
+        afterCreatePage: async () => {
+          // do something
+        },
+        beforeCapture: async () => {
+          // do something
+        },
+        afterCapture: async () => {
           // do something
         },
       },
@@ -93,6 +101,10 @@ class ScreenShot {
       return await Promise.resolve(this.browser);
     }
     const browserInstance = await puppeteer.launch(browser);
+    browserInstance.on('disconnected', () => {
+      this.close();
+    });
+
     this.browser = browserInstance;
     return browserInstance;
   }
@@ -164,7 +176,8 @@ class ScreenShot {
 
   async close() {
     const browser = await this.getBrowser();
-    browser.close();
+    await browser.close();
+    this.browser = null;
   }
 }
 
