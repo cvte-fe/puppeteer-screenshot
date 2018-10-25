@@ -60,6 +60,18 @@ const screenshot = new Screenshot({
 })
 
 const result = await screenshot.capture('http://www.baidu.com');
+
+await screenshot.close();
+```
+
+#### close 销毁`Browser`实例
+
+每个`Screenshot`实例只会使用一个`Browser`，所以在所有任务完毕后应该销毁`Browser`， 否则可能会导致内存泄漏；另外，服务关闭时也应该销毁`Browser`。
+
+```
+process.on('exit', code => {
+  screenshot.close();
+});
 ```
 
 ### Options
