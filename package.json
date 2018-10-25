@@ -1,6 +1,6 @@
 {
   "name": "puppeteer-screenshot",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "puppeteer-screenshot",
   "main": "dist/index.js",
   "repository": "git@github.com:cvte-fe/puppeteer-screenshot.git",
@@ -14,10 +14,12 @@
     "testEnvironment": "node"
   },
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "bluebird": "^3.5.2",
     "deep-extend": "^0.6.0",
     "fs-extra": "^7.0.0",
     "koa-compose": "^4.1.0",
+    "lodash": "^4.17.11",
     "puppeteer": "^1.9.0",
     "qiniu": "^7.2.1",
     "queue": "^4.5.0",

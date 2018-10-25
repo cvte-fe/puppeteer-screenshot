@@ -61,6 +61,9 @@ class ScreenShot {
         afterCapture: async () => {
           // do something
         },
+        onCrash: () => {
+          // do something
+        },
       },
     },
   };
@@ -98,13 +101,15 @@ class ScreenShot {
   }
 
   async launch() {
-    const { browser } = this.options;
+    const { browser, capture } = this.options;
+    const { hooks } = capture;
     if (this.browser) {
       return await Promise.resolve(this.browser);
     }
     const browserInstance = await puppeteer.launch(browser);
     browserInstance.on('disconnected', () => {
       this.close();
+      hooks.onCrash && hooks.onCrash();
     });
 
     this.browser = browserInstance;
