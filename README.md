@@ -61,6 +61,17 @@ const screenshot = new Screenshot({
 
 const result = await screenshot.capture('http://www.baidu.com');
 
+// 传入对象方式覆盖options
+const result2 = await screenshot.capture({
+  url: 'http://www.baidu.com',
+  type: 'url',
+  view: {
+    deviceScaleFactor: 1,
+    width: 750,
+    height: 1200,
+  },
+});
+
 await screenshot.close();
 ```
 
