@@ -1,16 +1,15 @@
 {
   "name": "puppeteer-screenshot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "puppeteer-screenshot",
-  "main": "index.js",
-  "repository": "git@github.com:lingxuan630/puppeteer-screenshot.git",
+  "main": "dist/index.js",
+  "repository": "git@github.com:cvte-fe/puppeteer-screenshot.git",
   "author": "linson",
   "license": "MIT",
   "scripts": {
     "build": "babel ./src --out-dir ./dist",
     "test": "NODE_ENV=test jest"
   },
-  "main": "dist/index.js",
   "jest": {
     "testEnvironment": "node"
   },
@@ -33,6 +32,7 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-export-extensions": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-flow": "^6.23.0",

@@ -4,5 +4,11 @@
     "stage-0",
     "flow"
   ],
-  "plugins": ["transform-export-extensions", "add-module-exports", "transform-class-properties", "transform-object-rest-spread"]
+  "plugins": [
+    "transform-export-extensions", 
+    "add-module-exports", 
+    "transform-class-properties", 
+    "transform-object-rest-spread",
+    "transform-runtime"
+  ]
 }

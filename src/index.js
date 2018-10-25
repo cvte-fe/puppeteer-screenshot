@@ -15,6 +15,8 @@ import initPageMiddleware from './middlewares/initPage';
 import captureMiddleware from './middlewares/capture';
 import storageMiddleware from './middlewares/storage';
 
+require('babel-polyfill');
+
 global.Promise = require('bluebird');
 
 class ScreenShot {
