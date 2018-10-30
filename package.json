@@ -1,6 +1,6 @@
 {
   "name": "puppeteer-screenshot",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "puppeteer-screenshot",
   "main": "dist/index.js",
   "repository": "git@github.com:cvte-fe/puppeteer-screenshot.git",
@@ -8,7 +8,8 @@
   "license": "MIT",
   "scripts": {
     "build": "babel ./src --out-dir ./dist",
-    "test": "NODE_ENV=test jest"
+    "test": "NODE_ENV=test jest",
+    "prepublish": "npm run build"
   },
   "jest": {
     "testEnvironment": "node"

@@ -39,10 +39,6 @@ export default async (ctx, next) => {
     result.pageError = err;
   });
 
-  page.on('load', () => {
-    next();
-  });
-
   ctx.browser = browser;
   ctx.page = page;
 
@@ -51,9 +47,20 @@ export default async (ctx, next) => {
   }
 
   if (type === 'html') {
+    page.on('load', () => {
+      next();
+    });
+
     await page.setContent(html);
   } else if (type === 'url') {
-    await page.goto(url, pageOption);
+    try {
+      await page.goto(url, pageOption);
+      next();
+    } catch (e) {
+      result.openPageError = e;
+      console.log('error and go to next step:', e);
+      next();
+    }
   } else {
     throw new Error(`unknown type: ${type}`);
   }

@@ -85,7 +85,8 @@ var ScreenShot = function () {
           path: _path2.default.join(process.cwd(), './screenshot')
         },
         pageOption: {
-          timeout: 30000
+          timeout: 30000,
+          waitUntil: 'load'
         },
         isSetRequestInterception: false, // Enabling request interception disables page caching.
         view: {
@@ -167,7 +168,10 @@ var ScreenShot = function () {
             return function afterCapture() {
               return _ref4.apply(this, arguments);
             };
-          }()
+          }(),
+          onCrash: function onCrash() {
+            // do something
+          }
         }
       }
     };
@@ -205,39 +209,42 @@ var ScreenShot = function () {
       var _ref5 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee5() {
         var _this2 = this;
 
-        var browser, browserInstance;
+        var _options, browser, capture, hooks, browserInstance;
+
         return _regenerator2.default.wrap(function _callee5$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
               case 0:
-                browser = this.options.browser;
+                _options = this.options, browser = _options.browser, capture = _options.capture;
+                hooks = capture.hooks;
 
                 if (!this.browser) {
-                  _context5.next = 5;
+                  _context5.next = 6;
                   break;
                 }
 
-                _context5.next = 4;
+                _context5.next = 5;
                 return _promise2.default.resolve(this.browser);
 
-              case 4:
+              case 5:
                 return _context5.abrupt('return', _context5.sent);
 
-              case 5:
-                _context5.next = 7;
+              case 6:
+                _context5.next = 8;
                 return _puppeteer2.default.launch(browser);
 
-              case 7:
+              case 8:
                 browserInstance = _context5.sent;
 
                 browserInstance.on('disconnected', function () {
                   _this2.close();
+                  hooks.onCrash && hooks.onCrash();
                 });
 
                 this.browser = browserInstance;
                 return _context5.abrupt('return', browserInstance);
 
-              case 11:
+              case 12:
               case 'end':
                 return _context5.stop();
             }

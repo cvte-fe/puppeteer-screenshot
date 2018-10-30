@@ -81,56 +81,70 @@ exports.default = function () {
               result.pageError = err;
             });
 
-            page.on('load', function () {
-              next();
-            });
-
             ctx.browser = browser;
             ctx.page = page;
 
             if ((0, _lodash.isEmpty)(view)) {
-              _context.next = 29;
+              _context.next = 28;
               break;
             }
 
-            _context.next = 29;
+            _context.next = 28;
             return page.setViewport(view);
 
-          case 29:
+          case 28:
             if (!(type === 'html')) {
               _context.next = 34;
               break;
             }
 
+            page.on('load', function () {
+              next();
+            });
+
             _context.next = 32;
             return page.setContent(html);
 
           case 32:
-            _context.next = 40;
+            _context.next = 49;
             break;
 
           case 34:
             if (!(type === 'url')) {
-              _context.next = 39;
+              _context.next = 48;
               break;
             }
 
-            _context.next = 37;
+            _context.prev = 35;
+            _context.next = 38;
             return page.goto(url, pageOption);
 
-          case 37:
-            _context.next = 40;
+          case 38:
+            next();
+            _context.next = 46;
             break;
 
-          case 39:
+          case 41:
+            _context.prev = 41;
+            _context.t2 = _context['catch'](35);
+
+            result.openPageError = _context.t2;
+            console.log('error and go to next step:', _context.t2);
+            next();
+
+          case 46:
+            _context.next = 49;
+            break;
+
+          case 48:
             throw new Error('unknown type: ' + type);
 
-          case 40:
+          case 49:
           case 'end':
             return _context.stop();
         }
       }
-    }, _callee, undefined);
+    }, _callee, undefined, [[35, 41]]);
   }));
 
   return function (_x, _x2) {

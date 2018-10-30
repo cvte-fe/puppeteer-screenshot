@@ -35,6 +35,7 @@ class ScreenShot {
       },
       pageOption: {
         timeout: 30000,
+        waitUntil: 'load',
       },
       isSetRequestInterception: false, // Enabling request interception disables page caching.
       view: {
