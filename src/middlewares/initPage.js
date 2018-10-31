@@ -39,6 +39,12 @@ export default async (ctx, next) => {
     result.pageError = err;
   });
 
+  page.on('error', error => {
+    console.error('page error');
+    ctx.reject(error);
+    page.close();
+  });
+
   ctx.browser = browser;
   ctx.page = page;
 
