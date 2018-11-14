@@ -77,6 +77,7 @@ var ScreenShot = function () {
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
         headless: true
       },
+      isDebug: false,
       capture: {
         optimize: true,
         storage: {
@@ -308,6 +309,8 @@ var ScreenShot = function () {
         throw new Error('options can not be empty');
       }
 
+      var isDebug = this.options.isDebug;
+
       var defer = function () {
         var resolve = void 0,
             reject = void 0;
@@ -348,10 +351,14 @@ var ScreenShot = function () {
         reject: defer.reject,
         result: {
           requestError: []
-        }
+        },
+        trace: []
       };
 
       fn(context, function (ctx) {
+        if (isDebug) {
+          console.log('trace', ctx.trace);
+        }
         defer.resolve(ctx);
       });
 

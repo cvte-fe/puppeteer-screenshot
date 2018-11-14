@@ -26,6 +26,7 @@ class ScreenShot {
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
       headless: true,
     },
+    isDebug: false,
     capture: {
       optimize: true,
       storage: {
@@ -131,6 +132,8 @@ class ScreenShot {
       throw new Error('options can not be empty');
     }
 
+    const isDebug = this.options.isDebug;
+
     const defer: Object = (function() {
       let resolve, reject;
       const promise = new Promise((res, rej) => {
@@ -171,9 +174,13 @@ class ScreenShot {
       result: {
         requestError: [],
       },
+      trace: [],
     };
 
     fn(context, ctx => {
+      if (isDebug) {
+        console.log('trace', ctx.trace);
+      }
       defer.resolve(ctx);
     });
 

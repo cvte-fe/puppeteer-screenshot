@@ -18,20 +18,24 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = function () {
   var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(ctx, next) {
-    var options, result, hooks, pageOption, browser, page, view, html, url, type, isSetRequestInterception, interceptedRequest;
+    var options, result, trace, hooks, pageOption, browser, page, view, html, url, type, isSetRequestInterception, interceptedRequest;
     return _regenerator2.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            console.log('middleware: initPage');
+            // console.log('middleware: initPage');
 
-            options = ctx.options, result = ctx.result;
+            options = ctx.options, result = ctx.result, trace = ctx.trace;
             hooks = options.hooks, pageOption = options.pageOption;
-            _context.next = 5;
+            _context.next = 4;
             return ctx.getBrowser();
 
-          case 5:
+          case 4:
             browser = _context.sent;
+
+
+            trace.push('start create page');
+
             _context.t0 = hooks.beforeCreatePage;
 
             if (!_context.t0) {
@@ -59,11 +63,16 @@ exports.default = function () {
             return hooks.afterCreatePage(page, browser, ctx);
 
           case 17:
+
+            trace.push('created page');
+
             view = options.view, html = options.html, url = options.url, type = options.type, isSetRequestInterception = options.isSetRequestInterception, interceptedRequest = options.interceptedRequest;
-            _context.next = 20;
+            _context.next = 21;
             return page.setRequestInterception(isSetRequestInterception);
 
-          case 20:
+          case 21:
+
+            trace.push('setRequestInterception');
 
             // 用于拦截一些请求
             if ((0, _lodash.isFunction)(interceptedRequest)) {
@@ -71,80 +80,112 @@ exports.default = function () {
             }
 
             page.on('requestfailed', function (interceptedRequest) {
-              result.requestError.push({
+              var failData = {
                 url: interceptedRequest.url(),
                 errorText: interceptedRequest.failure().errorText
+              };
+
+              trace.push({
+                name: 'requestfailed',
+                data: failData
               });
+
+              result.requestError.push(failData);
             });
 
             page.on('pageerror', function (err) {
+              trace.push({
+                name: 'pageerror',
+                data: err
+              });
               result.pageError = err;
+            });
+
+            page.on('error', function (error) {
+              console.error('page error');
+
+              trace.push({
+                name: 'page crash',
+                data: error
+              });
+
+              ctx.reject({
+                ctx: ctx,
+                error: error
+              });
+              page.close();
             });
 
             ctx.browser = browser;
             ctx.page = page;
 
             if ((0, _lodash.isEmpty)(view)) {
-              _context.next = 28;
+              _context.next = 31;
               break;
             }
 
-            _context.next = 28;
+            _context.next = 31;
             return page.setViewport(view);
 
-          case 28:
+          case 31:
             if (!(type === 'html')) {
-              _context.next = 34;
+              _context.next = 37;
               break;
             }
 
             page.on('load', function () {
+              trace.push('onload');
               next();
             });
 
-            _context.next = 32;
+            _context.next = 35;
             return page.setContent(html);
 
-          case 32:
-            _context.next = 49;
+          case 35:
+            _context.next = 54;
             break;
 
-          case 34:
+          case 37:
             if (!(type === 'url')) {
-              _context.next = 48;
+              _context.next = 53;
               break;
             }
 
-            _context.prev = 35;
-            _context.next = 38;
+            _context.prev = 38;
+            _context.next = 41;
             return page.goto(url, pageOption);
 
-          case 38:
+          case 41:
+            trace.push('goto url: ' + url);
             next();
-            _context.next = 46;
+            _context.next = 51;
             break;
 
-          case 41:
-            _context.prev = 41;
-            _context.t2 = _context['catch'](35);
+          case 45:
+            _context.prev = 45;
+            _context.t2 = _context['catch'](38);
 
+            trace.push({
+              name: 'goto url error: ' + url,
+              data: _context.t2
+            });
             result.openPageError = _context.t2;
             console.log('error and go to next step:', _context.t2);
             next();
 
-          case 46:
-            _context.next = 49;
+          case 51:
+            _context.next = 54;
             break;
 
-          case 48:
+          case 53:
             throw new Error('unknown type: ' + type);
 
-          case 49:
+          case 54:
           case 'end':
             return _context.stop();
         }
       }
-    }, _callee, undefined, [[35, 41]]);
+    }, _callee, undefined, [[38, 45]]);
   }));
 
   return function (_x, _x2) {

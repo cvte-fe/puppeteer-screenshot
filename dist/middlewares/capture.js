@@ -22,13 +22,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = function () {
   var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(ctx, next) {
-    var options, page, result, reject, captureOption, hooks, screenshotResult;
+    var options, page, result, reject, trace, captureOption, hooks, screenshotResult;
     return _regenerator2.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             console.log('middleware: capture');
-            options = ctx.options, page = ctx.page, result = ctx.result, reject = ctx.reject;
+            options = ctx.options, page = ctx.page, result = ctx.result, reject = ctx.reject, trace = ctx.trace;
             captureOption = options.captureOption, hooks = options.hooks;
             _context.t0 = hooks.beforeCapture;
 
@@ -41,51 +41,66 @@ exports.default = function () {
             return hooks.beforeCapture(ctx);
 
           case 7:
+
+            trace.push('start  screenshot');
+
             screenshotResult = void 0;
-            _context.prev = 8;
-            _context.next = 11;
+            _context.prev = 9;
+            _context.next = 12;
             return page.screenshot((0, _extends3.default)({}, captureOption));
 
-          case 11:
+          case 12:
             screenshotResult = _context.sent;
-            _context.next = 18;
+
+
+            trace.push({
+              name: 'screenshot success',
+              data: screenshotResult
+            });
+            _context.next = 21;
             break;
 
-          case 14:
-            _context.prev = 14;
-            _context.t1 = _context['catch'](8);
+          case 16:
+            _context.prev = 16;
+            _context.t1 = _context['catch'](9);
 
+            trace.push({
+              name: 'screenshot error',
+              data: _context.t1
+            });
             reject(_context.t1);
             return _context.abrupt('return', false);
 
-          case 18:
-            _context.next = 20;
+          case 21:
+            _context.next = 23;
             return page.close();
 
-          case 20:
+          case 23:
+
+            trace.push('page close');
 
             result.data = screenshotResult;
 
             _context.t2 = hooks.afterCapture;
 
             if (!_context.t2) {
-              _context.next = 25;
+              _context.next = 29;
               break;
             }
 
-            _context.next = 25;
+            _context.next = 29;
             return hooks.afterCapture(screenshotResult, ctx);
 
-          case 25:
+          case 29:
 
             next();
 
-          case 26:
+          case 30:
           case 'end':
             return _context.stop();
         }
       }
-    }, _callee, undefined, [[8, 14]]);
+    }, _callee, undefined, [[9, 16]]);
   }));
 
   return function (_x, _x2) {
