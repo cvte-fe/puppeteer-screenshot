@@ -18,14 +18,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = function () {
   var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(ctx, next) {
-    var options, result, trace, hooks, pageOption, browser, page, view, html, url, type, isSetRequestInterception, interceptedRequest;
+    var options, result, trace, closeBrowser, hooks, pageOption, browser, page, view, html, url, type, isSetRequestInterception, interceptedRequest;
     return _regenerator2.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             // console.log('middleware: initPage');
 
-            options = ctx.options, result = ctx.result, trace = ctx.trace;
+            options = ctx.options, result = ctx.result, trace = ctx.trace, closeBrowser = ctx.closeBrowser;
             hooks = options.hooks, pageOption = options.pageOption;
             _context.next = 4;
             return ctx.getBrowser();
@@ -109,11 +109,17 @@ exports.default = function () {
                 data: error
               });
 
+              try {
+                closeBrowser();
+                page.close();
+              } catch (e) {
+                console.log('close page fail', e);
+              }
+
               ctx.reject({
                 ctx: ctx,
                 error: error
               });
-              page.close();
             });
 
             ctx.browser = browser;

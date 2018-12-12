@@ -57,7 +57,7 @@ exports.default = function () {
               name: 'screenshot success',
               data: screenshotResult
             });
-            _context.next = 21;
+            _context.next = 23;
             break;
 
           case 16:
@@ -68,14 +68,18 @@ exports.default = function () {
               name: 'screenshot error',
               data: _context.t1
             });
+            _context.next = 21;
+            return page.close();
+
+          case 21:
             reject(_context.t1);
             return _context.abrupt('return', false);
 
-          case 21:
-            _context.next = 23;
+          case 23:
+            _context.next = 25;
             return page.close();
 
-          case 23:
+          case 25:
 
             trace.push('page close');
 
@@ -84,18 +88,18 @@ exports.default = function () {
             _context.t2 = hooks.afterCapture;
 
             if (!_context.t2) {
-              _context.next = 29;
+              _context.next = 31;
               break;
             }
 
-            _context.next = 29;
+            _context.next = 31;
             return hooks.afterCapture(screenshotResult, ctx);
 
-          case 29:
+          case 31:
 
             next();
 
-          case 30:
+          case 32:
           case 'end':
             return _context.stop();
         }

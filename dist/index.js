@@ -305,6 +305,8 @@ var ScreenShot = function () {
   }, {
     key: 'capture',
     value: function capture(options) {
+      var _this3 = this;
+
       if (!options) {
         throw new Error('options can not be empty');
       }
@@ -346,6 +348,9 @@ var ScreenShot = function () {
 
       var context = {
         getBrowser: this.getBrowser.bind(this),
+        closeBrowser: function closeBrowser() {
+          _this3.close();
+        },
         options: captureOptions,
         resolve: defer.resolve,
         reject: defer.reject,
