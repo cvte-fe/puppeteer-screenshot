@@ -2,7 +2,7 @@ import { isEmpty, isFunction } from 'lodash';
 export default async (ctx, next) => {
   // console.log('middleware: initPage');
 
-  const { options, result, trace } = ctx;
+  const { options, result, trace, closeBrowser } = ctx;
   const { hooks, pageOption } = options;
   const browser = await ctx.getBrowser();
 
@@ -64,11 +64,17 @@ export default async (ctx, next) => {
       data: error,
     });
 
+    try{
+      closeBrowser();
+      page.close();
+    }catch(e){
+      console.log('close page fail', e);
+    }
+
     ctx.reject({
       ctx: ctx,
       error: error,
     });
-    page.close();
   });
 
   ctx.browser = browser;

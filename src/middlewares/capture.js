@@ -24,6 +24,7 @@ export default async (ctx, next) => {
       name: 'screenshot error',
       data: e,
     });
+    await page.close();
     reject(e);
     return false;
   }

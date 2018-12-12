@@ -168,6 +168,9 @@ class ScreenShot {
 
     const context = {
       getBrowser: this.getBrowser.bind(this),
+      closeBrowser: () => {
+        this.close();
+      },
       options: captureOptions,
       resolve: defer.resolve,
       reject: defer.reject,
