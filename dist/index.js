@@ -74,8 +74,9 @@ var ScreenShot = function () {
     this.browser = '';
     this.options = {
       browser: {
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
-        headless: true
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--enable-features=NetworkService'],
+        headless: true,
+        ignoreHTTPSErrors: true
       },
       isDebug: false,
       capture: {
