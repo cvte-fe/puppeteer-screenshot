@@ -23,8 +23,9 @@ class ScreenShot {
   browser = '';
   options = {
     browser: {
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage','--enable-features=NetworkService'],
       headless: true,
+      ignoreHTTPSErrors: true,
     },
     isDebug: false,
     capture: {
