@@ -23,7 +23,7 @@ class ScreenShot {
   browser = '';
   options = {
     browser: {
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
       headless: true,
     },
     isDebug: false,
